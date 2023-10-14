@@ -42,17 +42,28 @@
             </v-list-item>
           </router-link>
 
-          <router-link to="/reserve" style="text-decoration: none;">
-            <v-list-item>
+          <v-list-group no-action>
+            <template v-slot:activator no-action>
               <v-list-item-title>ข้อมูลการจอง</v-list-item-title>
-            </v-list-item>
-          </router-link>
-          
-          <template v-slot:activator>
-          <v-list-item-title>Users</v-list-item-title>
-        </template>
+            </template>
 
-        <v-list-group
+            <v-list-group :value="true" no-action sub-group>
+              <template v-slot:activator>
+                <v-list-item-content>
+                  <v-list-item-title>A4 21/06/2544</v-list-item-title>
+                </v-list-item-content>
+              </template>
+
+              <v-list-item style="background-color:red;">
+                <v-list-item-content style="color: white;">
+                 ยกเลิก
+                </v-list-item-content>
+              </v-list-item>
+
+            </v-list-group>
+          </v-list-group>
+
+          <!-- <v-list-group
           :value="true"
           no-action
           sub-group
@@ -69,9 +80,12 @@
             link
           >
           </v-list-item>
-          </v-list-group>
+          </v-list-group>-->
         </v-list-item-group>
 
+        <template v-slot:activator>
+          <v-list-item-title>Users</v-list-item-title>
+        </template>
 
         <router-link to="/login" style="text-decoration: none;">
           <v-list-item style="margin-top: 445px;">
@@ -103,10 +117,18 @@ export default {
 };
 </script>
 
-<style>
-  .display-2 {
-    font-size: 5px; /* เปลี่ยนขนาดฟ้อนให้เล็กลงตามที่คุณต้องการ */
-  }
+
+
+<style scoped>
+.display-2 {
+  font-size: 5px; /* เปลี่ยนขนาดฟ้อนให้เล็กลงตามที่คุณต้องการ */
+}
+.no-border {
+  border: none;
+  box-shadow: none;
+}
 </style>
+
+
 
 

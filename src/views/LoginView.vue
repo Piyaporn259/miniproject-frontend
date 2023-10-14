@@ -1,24 +1,28 @@
 <template>
+  <v-app>
+    <Bar1 />
     <v-container>
       <v-row>
         <v-col cols="12">
-      <LoginFrom/>
+          <LoginFrom />
         </v-col>
-    </v-row>
+      </v-row>
     </v-container>
-  </template>
+  </v-app>
+</template>
   
   <script>
-import LoginFrom from '../components/Login.vue'
-  
-  export default {
-    components: {
-      LoginFrom
-    }
+import LoginFrom from "../components/Login.vue";
+import Bar1 from "@/components/Bar1.vue";
+
+export default {
+  components: {
+    Bar1,
+    LoginFrom
   }
-  </script>
+};
+</script>
   
   <style>
-  
-  </style>
+</style>
   

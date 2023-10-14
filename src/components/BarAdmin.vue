@@ -15,7 +15,7 @@
           </v-list-item>
 
           <v-list-item-group v-model="group" active-class="deep-purple--text text--accent-4">
-            <router-link to="/" style="text-decoration: none;">
+            <router-link to="/HomeAdmin" style="text-decoration: none;">
               <v-list-item>
                 <v-list-item-icon>
                   <v-icon>mdi-home</v-icon>
@@ -29,7 +29,7 @@
                 <v-list-item-icon>
                   <v-icon>mdi-checkbox-marked-circle-outline</v-icon>
                 </v-list-item-icon>
-                <v-list-item-title>จัดการข้อมูล</v-list-item-title>
+                <v-list-item-title>จัดการข้อมูลการจอง</v-list-item-title>
               </v-list-item>
             </router-link>
           </v-list-item-group>

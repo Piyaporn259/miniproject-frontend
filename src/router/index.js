@@ -26,7 +26,7 @@ const routes = [
   {
     path: '/register',
     name: 'register',
-    component: () =>import('../components/Register.vue')
+    component: () =>import('../views/RegisterView.vue')
   },
   {
     path: '/reserve',
