@@ -14,6 +14,18 @@
             </v-list-item-avatar>
           </v-list-item>
 
+          <v-list-item link>
+          <v-list-item-content>
+            <v-list-item-title class="text-h6">{{ user.userName }}</v-list-item-title>
+            <br/>
+            <v-list-item-subtitle>{{ user.firstName }}</v-list-item-subtitle>
+            <br/>
+            <v-list-item-subtitle>{{ user.lastName }}</v-list-item-subtitle>
+            <br/>
+            <v-list-item-subtitle>{{ user.Tel }}</v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+
           <v-list-item-group v-model="group" active-class="deep-purple--text text--accent-4">
             <router-link to="/HomeAdmin" style="text-decoration: none;">
               <v-list-item>
@@ -49,14 +61,39 @@
   
   
   <script>
-  export default {
-    data() {
-      return {
-        drawer: false,
-        group: null
-      };
+export default {
+  data() {
+    return {
+      drawer: false,
+      group: null,
+      user: {
+        userName: "",
+        firstName: "",
+        lastName: "",
+        Tel: ""
+      },
+      auth: null,
+      admin: null,
+      owner: null
+    };
+  },
+  methods: {},
+  created() {
+    this.auth = JSON.parse(localStorage.getItem("auth"));
+    this.user.userName = this.auth.userName;
+    this.admin = this.auth.admin !== null;
+    // this.owner =   this.auth.owner !== null
+    if (this.admin) {
+      this.user.firstName =  this.auth.admin.adminFname
+      this.user.lastName =  this.auth.admin.adminLname
+      this.user.Tel =  this.auth.admin.adminTel
+    }else{
+      this.user.firstName =  this.auth.owner.ownerFname
+      this.user.lastName =  this.auth.owner.ownerLname
+      this.user.Tel =  this.auth.owner.ownerTel
     }
-  };
-  </script>
+  }
+};
+</script>
   
   

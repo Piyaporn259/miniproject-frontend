@@ -1,32 +1,38 @@
 <template>
-  <v-sheet width="300" class="mx-auto">
-    <v-form ref="registerForm" fast-fail @submit.prevent>
-      <v-card class="register-card">
-        <v-card-title style="font-size: 24px ">ลงทะเบียน</v-card-title>
-        <v-card-text>
-          <v-text-field v-model="firstName" label="ชื่อ" :rules="firstNameRules"></v-text-field>
+  <div class="container">
+    <v-sheet width="300" class="mx-auto">
+      <v-form ref="registerForm" fast-fail @submit.prevent>
+        <v-card class="register-card">
+          <v-card-title style="font-size: 24px ">ลงทะเบียน</v-card-title>
+          <v-card-text>
+            <v-text-field v-model="firstName" label="ชื่อ" :rules="firstNameRules"></v-text-field>
 
-          <v-text-field v-model="lastName" label="นามสกุล" :rules="lastNameRules"></v-text-field>
+            <v-text-field v-model="lastName" label="นามสกุล" :rules="lastNameRules"></v-text-field>
 
-          <v-text-field v-model="Tel" label="เบอร์โทรศัพท์" :rules="TelRules"></v-text-field>
+            <v-text-field v-model="Tel" label="เบอร์โทรศัพท์" :rules="TelRules"></v-text-field>
 
-          <v-text-field v-model="userName" label="ชื่อผู้ใช้งาน" :rules="userNameRules"></v-text-field>
+            <v-text-field v-model="userName" label="ชื่อผู้ใช้งาน" :rules="userNameRules"></v-text-field>
 
-          <v-text-field v-model="password" label="รหัสผ่าน" :rules="passwordRules"></v-text-field>
+            <v-text-field v-model="password" label="รหัสผ่าน" :rules="passwordRules"></v-text-field>
 
-          <p class="subheading font-weight-regular text-right">
-            <router-link to="/login" target="_blank">มีบัญชีอยู่แล้ว?</router-link>
-          </p>
+            <p class="subheading font-weight-regular text-right">
+              <router-link to="/login" target="_blank">มีบัญชีอยู่แล้ว?</router-link>
+            </p>
 
-          <v-btn color="#79BED9" class="mr-4" @click="register" block>ลงทะเบียน</v-btn>
-        </v-card-text>
-      </v-card>
-    </v-form>
-  </v-sheet>
+            <v-btn color="#79BED9" class="mr-4" @click="register" block>ลงทะเบียน</v-btn>
+          </v-card-text>
+        </v-card>
+      </v-form>
+    </v-sheet>
+  </div>
 </template>
+
   <script>
+import Swal from "sweetalert2";
+
 export default {
   data: () => ({
+    valid: true,
     firstName: "",
 
     firstNameRules: [
@@ -69,8 +75,44 @@ export default {
       if (this.$refs.registerForm.validate(true)) {
         this.$router.push({ path: "/login" }).catch(() => {});
       }
+    },
+    async register() {
+    const info = {
+      ownerFname: this.firstName,
+      ownerLname: this.lastName,
+      ownerTel: this.Tel,
+      userName: this.userName,
+      password: this.password
+    };
+    console.log(info);
+
+    try {
+      var response = await this.axios.post(
+        "http://localhost:8000/register",
+        info
+      );
+      if (response.status === 201) {
+        console.log(response.info);
+        localStorage.setItem("auth", JSON.stringify(response.info));
+        Swal.fire({
+          title: "สำเร็จ!",
+          text: "ทำการลงทะเบียเสร็จสิ้น",
+          icon: "success",
+          confirmButtonText: "ยืนยัน"
+        }).then(() => (window.location.href = "/login"));
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "ไม่สำเร็จ!",
+        text: "กรุณากรอกข้อมูลใหม่",
+        icon: "error",
+        confirmButtonText: "ตกลง"
+      });
+      console.log(error);
     }
   }
+  },
+  
 };
 </script>
 <style scoped>

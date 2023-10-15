@@ -18,8 +18,21 @@
             <div class="d-flex align-center justify-end">
               <v-subheader class="text-h6 mr-2">คุณต้องการจอง</v-subheader>
               <div class="custom-selects">
-                <v-select :items="days" label="เลือกวันที่" solo></v-select>
-                <v-select :items="items" label="เลือกจองพื้นที่" solo></v-select>
+                <v-select
+                  :items="days"
+                  label="เลือกวันที่"
+                  solo
+                  v-model="dataReserve"
+                  @change="selectDate"
+                ></v-select>
+                <v-select
+                  :items="items"
+                  label="เลือกจองพื้นที่"
+                  item-value="areaId"
+                  item-text="areaName"
+                  solo
+                  v-model="area"
+                ></v-select>
               </div>
             </div>
           </v-col>
@@ -33,12 +46,13 @@
           </template>
 
           <v-card>
-            <v-card-title class="text-h5">ยืนยันพื้นที่การจอง {{ selectedArea }}</v-card-title>
-            <v-card-text>{{ selectedArea }}</v-card-text>
+            <v-card-title class="text-h5">ยืนยันพื้นที่การจอง</v-card-title>
+            <p>วันที่ : {{ dataReserve }}</p>
+            <p>พื้นที่ : {{ getAreaName(area) }}</p>
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="green darken-1" text @click="dialog = false">ยกเลิก</v-btn>
-              <v-btn color="green darken-1" text @click="dialog = false">ยืนยัน</v-btn>
+              <v-btn color="green darken-1" text @click="reserve">ยืนยัน</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -51,6 +65,7 @@
 
 <script>
 import Bar from "@/components/Bar.vue";
+import Swal from "sweetalert2";
 
 export default {
   data() {
@@ -69,44 +84,64 @@ export default {
     }
 
     return {
-      items: [
-        "A1",
-        "A2",
-        "A3",
-        "A4",
-        "A5",
-        "B1",
-        "B2",
-        "B3",
-        "B4",
-        "C1",
-        "C2",
-        "C3",
-        "C4",
-        "D1",
-        "D2",
-        "D3",
-        "D4",
-        "E1",
-        "E2",
-        "E3",
-        "E4",
-        "F1",
-        "F2",
-        "F3",
-        "F4"
-      ],
+      items: [],
       days,
-      dialog: false
+      dialog: false,
+      selectedArea: "",
+      dataReserve: "",
+      area: ""
     };
   },
   components: {
     Bar
   },
+  created() {
+    this.AreaData();
+  },
+
   methods: {
+    async AreaData() {
+      try {
+        const response = await this.axios.get("http://localhost:8000/area");
+        this.items = response.data;
+        console.log(this.items);
+      } catch (error) {
+        console.error("Error fetching product data:", error);
+      }
+    },
+    getAreaName(areaId) {
+      const foundItem = this.items.find(e => e.areaId === areaId);
+      return foundItem ? foundItem.areaName : "";
+    },
+
+    selectDate(date) {
+      this.date = date;
+      console.log("date", date);
+    },
     Reserve() {
       if (this.$refs.ReserveForm.validate(true)) {
         this.$router.push({ path: "/" }).catch(() => {});
+      }
+    },
+    async reserve() {
+      try {
+        const user = JSON.parse(localStorage.getItem("auth"));
+        const userId = user.userId;
+        const data = {
+          reserveDate: this.dataReserve,
+          user: {
+            userId: userId
+          },
+          area: {
+            areaId: this.area
+          }
+        };
+        const responseReserve = await this.axios.post(
+          "http://localhost:8000/reserve",
+          data
+        );
+      } catch (error) {
+        console.error("Error fetching product data:", error);
       }
     }
   }

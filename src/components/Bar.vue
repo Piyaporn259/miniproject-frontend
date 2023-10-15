@@ -16,10 +16,13 @@
 
         <v-list-item link>
           <v-list-item-content>
-            <v-list-item-title class="text-h6">userName</v-list-item-title>
-            <v-list-item-subtitle>firstName</v-list-item-subtitle>
-            <v-list-item-subtitle>lastName</v-list-item-subtitle>
-            <v-list-item-subtitle>Tel</v-list-item-subtitle>
+            <v-list-item-title class="text-h6">{{ user.userName }}</v-list-item-title>
+            <br/>
+            <v-list-item-subtitle>{{ user.firstName }}</v-list-item-subtitle>
+            <br/>
+            <v-list-item-subtitle>{{ user.lastName }}</v-list-item-subtitle>
+            <br/>
+            <v-list-item-subtitle>{{ user.Tel }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
 
@@ -55,32 +58,10 @@
               </template>
 
               <v-list-item style="background-color:red;">
-                <v-list-item-content style="color: white;">
-                 ยกเลิก
-                </v-list-item-content>
+                <v-list-item-content style="color: white;">ยกเลิก</v-list-item-content>
               </v-list-item>
-
             </v-list-group>
           </v-list-group>
-
-          <!-- <v-list-group
-          :value="true"
-          no-action
-          sub-group
-        >
-          <template v-slot:activator>
-            <v-list-item-content>
-              <v-list-item-title>Admin</v-list-item-title>
-            </v-list-item-content>
-          </template>
-
-          <v-list-item
-            v-for="([title, icon], i) in admins"
-            :key="i"
-            link
-          >
-          </v-list-item>
-          </v-list-group>-->
         </v-list-item-group>
 
         <template v-slot:activator>
@@ -107,13 +88,33 @@ export default {
     return {
       drawer: false,
       group: null,
-      userName: {},
-      firstName: {},
-      lastName: {},
-      Tel: {}
+      user: {
+        userName: "",
+        firstName: "",
+        lastName: "",
+        Tel: ""
+      },
+      auth: null,
+      admin: null,
+      owner: null
     };
   },
-  methods: {}
+  methods: {},
+  created() {
+    this.auth = JSON.parse(localStorage.getItem("auth"));
+    this.user.userName = this.auth.userName;
+    this.admin = this.auth.admin !== null;
+    // this.owner =   this.auth.owner !== null
+    if (this.admin) {
+      this.user.firstName =  this.auth.admin.adminFname
+      this.user.lastName =  this.auth.admin.adminLname
+      this.user.Tel =  this.auth.admin.adminTel
+    }else{
+      this.user.firstName =  this.auth.owner.ownerFname
+      this.user.lastName =  this.auth.owner.ownerLname
+      this.user.Tel =  this.auth.owner.ownerTel
+    }
+  }
 };
 </script>
 
