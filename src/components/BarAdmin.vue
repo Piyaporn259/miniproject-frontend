@@ -47,13 +47,14 @@
           </v-list-item-group>
   
           <router-link to="/login" style="text-decoration: none;">
-            <v-list-item style="margin-top: 445px;">
-              <v-list-item-icon>
-                <v-icon>mdi-exit-to-app</v-icon>
-              </v-list-item-icon>
-              <v-list-item-title>ออกจากระบบ</v-list-item-title>
-            </v-list-item>
-          </router-link>
+          <v-list-item style="margin-top: 445px;">
+            <v-list-item-icon>
+              <v-icon>mdi-exit-to-app</v-icon>
+            </v-list-item-icon>
+            <v-list-item-title>ออกจากระบบ</v-list-item-title>
+          </v-list-item>
+        </router-link>
+
         </v-list>
       </v-navigation-drawer>
     </div>

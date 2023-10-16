@@ -25,6 +25,7 @@
                   v-model="dataReserve"
                   @change="selectDate"
                 ></v-select>
+
                 <v-select
                   :items="items"
                   label="เลือกจองพื้นที่"
@@ -52,7 +53,7 @@
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="green darken-1" text @click="dialog = false">ยกเลิก</v-btn>
-              <v-btn color="green darken-1" text @click="reserve">ยืนยัน</v-btn>
+              <v-btn color="green darken-1" text @click=" reserve">ยืนยัน</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
@@ -84,29 +85,36 @@ export default {
     }
 
     return {
-      items: [],
+      items: "",
       days,
       dialog: false,
       selectedArea: "",
       dataReserve: "",
-      area: ""
+      area: [],
+      userId: null
     };
   },
   components: {
     Bar
   },
   created() {
+    this.userId = JSON.parse(localStorage.getItem("auth"));
     this.AreaData();
   },
-
+  // computed: {
+  //   isDisabled(statusId) {
+  //     return statusId === 2;
+  //   }
+  // },
+  
   methods: {
     async AreaData() {
       try {
         const response = await this.axios.get("http://localhost:8000/area");
-        this.items = response.data;
+        this.items = response.data.filter(item => item.status.statusId !== 2);
         console.log(this.items);
       } catch (error) {
-        console.error("Error fetching product data:", error);
+        console.error("Error fetching area data:", error);
       }
     },
     getAreaName(areaId) {
@@ -125,28 +133,73 @@ export default {
     },
     async reserve() {
       try {
-        const user = JSON.parse(localStorage.getItem("auth"));
-        const userId = user.userId;
         const data = {
           reserveDate: this.dataReserve,
           user: {
-            userId: userId
+            userId: this.userId.userId
           },
           area: {
             areaId: this.area
           }
         };
+
         const responseReserve = await this.axios.post(
           "http://localhost:8000/reserve",
           data
         );
+
+        if (responseReserve.status === 201) {
+          Swal.fire({
+            title: "สำเร็จ!",
+            text: "ทำการจองสำเร็จ",
+            icon: "success",
+            confirmButtonText: "ยืนยัน"
+          }).then(async () => {
+            const updatedStatus = await this.axios.put(
+              `http://localhost:8000/area/${this.area}`,
+              {
+                status: {
+                  statusId: 2
+                }
+              }
+            );
+            if (updatedStatus.status === 200) {
+              window.location.href = "/reserve";
+            }
+          });
+        }
       } catch (error) {
-        console.error("Error fetching product data:", error);
+        Swal.fire({
+          title: "ไม่สำเร็จ!",
+          text: "กรุณาจองข้อมูลใหม่",
+          icon: "error",
+          confirmButtonText: "ตกลง"
+        });
+        console.error("Error reserving data:", error);
       }
+    }
+  },
+
+  generateArea(items, index) {
+    return `${items}_${index}`;
+  },
+  openDialog(item) {
+    if (item.area_status.statusId === 2) {
+      Swal.fire({
+        title: "พื้นที่ถูกจองแล้ว!",
+        text: "กรุณาจองพื้นที่ใหม่",
+        icon: "error",
+        confirmButtonText: "ตกลง"
+      });
+    } else {
+      this.dataReserve = item;
+      this.area = item;
+      this.dialogVisible = true; // Set the dialogVisible property to true here
     }
   }
 };
 </script>
+
 
 
 <style scoped>

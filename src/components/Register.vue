@@ -1,7 +1,9 @@
 <template>
-  <div class="container">
-    <v-sheet width="300" class="mx-auto">
-      <v-form ref="registerForm" fast-fail @submit.prevent>
+  <div class="container" >
+    <v-sheet  class="mx-auto" style=" display: flex;
+  justify-content: center;
+  align-items: center;">
+      <v-form ref="registerForm" fast-fail @submit.prevent class="registerForm-card">
         <v-card class="register-card">
           <v-card-title style="font-size: 24px ">ลงทะเบียน</v-card-title>
           <v-card-text>
@@ -37,36 +39,36 @@ export default {
 
     firstNameRules: [
       value => {
-        if (value?.length > 3) return true;
-        return "First name must be at least 3 characters.";
+        if (value?.length > 2) return true;
+        return "ชื่อต้องเป็นตัวอักษรเท่านั้น";
       }
     ],
     lastName: "",
     lastNameRules: [
       value => {
         if (/[^0-9]/.test(value)) return true;
-        return "Last name cannot contain digits.";
+        return "นามสกุลต้องเป็นตัวอักษรเท่านั้น";
       }
     ],
     Tel: "",
     TelRules: [
       value => {
         if (value?.length > 9) return true;
-        return "Tel number must be at least 10 numbers.";
+        return "กรอกหมายเลขให้ครบ 10 ตัว";
       }
     ],
     userName: "",
     userNameRules: [
       value => {
-        if (value?.length > 3) return true;
-        return "User name must be at least 3 characters.";
+        if (value?.length > 2) return true;
+        return "ชื่อผู้ใช้ต้องมีอย่างน้อย 2 ตัวอักษรขึ้นไป";
       }
     ],
     password: "",
     passwordRules: [
       value => {
-        if (value?.length > 3) return true;
-        return "Password must be at least 3 characters.";
+        if (value?.length > 2) return true;
+        return "ตัวอักษรหรือตัวเลข 2 ตัวขึ้นไป";
       }
     ]
   }),
@@ -117,8 +119,17 @@ export default {
 </script>
 <style scoped>
 .register-card {
-  max-width: 2000px; /* Increase the max-width to make the card wider */
-  height: 500px; /* Increase the height to make the card taller */
-  margin: 0 auto; /* Center the card horizontally */
+  max-width: 1000px;
+  height: 600px; 
+  margin: 0 auto; 
+  
+}
+.registerForm-card{
+  width: 400px;
+}
+.container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

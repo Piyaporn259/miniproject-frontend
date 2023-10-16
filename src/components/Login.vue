@@ -10,7 +10,7 @@
           </template>
         </v-text-field>
 
-        <v-text-field solo label="รหัสผ่าน" v-model="password">
+        <v-text-field solo label="รหัสผ่าน" v-model="password" type="password">
           <template v-slot:label>
             <v-icon left>mdi-key</v-icon>
             <span class="label-text">รหัสผ่าน</span>
@@ -68,9 +68,9 @@ export default {
             icon: "success",
             confirmButtonText: "ยืนยัน"
           }).then(() => {
-            if (response.data.type.typeName === "Owner"){
+            if (response.data.type.typeName === "owner"){
               window.location.href = "/";
-            }else if(response.data.type.typeName === "Admin"){
+            }else if(response.data.type.typeName === "admin"){
               window.location.href = "/HomeAdmin";
             }
             

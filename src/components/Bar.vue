@@ -17,11 +17,11 @@
         <v-list-item link>
           <v-list-item-content>
             <v-list-item-title class="text-h6">{{ user.userName }}</v-list-item-title>
-            <br/>
+            <br />
             <v-list-item-subtitle>{{ user.firstName }}</v-list-item-subtitle>
-            <br/>
+            <br />
             <v-list-item-subtitle>{{ user.lastName }}</v-list-item-subtitle>
-            <br/>
+            <br />
             <v-list-item-subtitle>{{ user.Tel }}</v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
@@ -47,19 +47,18 @@
 
           <v-list-group no-action>
             <template v-slot:activator no-action>
-              <v-list-item-title>ข้อมูลการจอง</v-list-item-title>
+              <v-list-item-title v-model="reserve">ข้อมูลการจอง</v-list-item-title>
             </template>
 
             <v-list-group :value="true" no-action sub-group>
               <template v-slot:activator>
                 <v-list-item-content>
-                  <v-list-item-title>A4 21/06/2544</v-list-item-title>
+                  <v-list-item v-for="item in items" :key="item.id">
+                    <v-list-item-title>{{ item.area.areaName }} {{ item.reserveDate }}</v-list-item-title>
+                  </v-list-item>
                 </v-list-item-content>
               </template>
 
-              <v-list-item style="background-color:red;">
-                <v-list-item-content style="color: white;">ยกเลิก</v-list-item-content>
-              </v-list-item>
             </v-list-group>
           </v-list-group>
         </v-list-item-group>
@@ -94,26 +93,56 @@ export default {
         lastName: "",
         Tel: ""
       },
+      area: {
+        areaName: ""
+      },
       auth: null,
       admin: null,
-      owner: null
+      owner: null,
+      idforDelete: "",
+      items: []
     };
   },
-  methods: {},
+
+  watch: {
+    dialog(val) {
+      val || this.close();
+    },
+    dialogDelete(val) {
+      val || this.closeDelete();
+    }
+  },
+
+  methods: {
+    async reserve() {
+      try {
+        const responseReserve = await this.axios.get(
+          `http://localhost:8000/reserve/${this.auth.userId}`
+        );
+        if (responseReserve.status === 200) {
+          this.items = responseReserve.data;
+          console.log("items", this.items);
+        }
+      } catch (error) {
+        console.log("Error fetching product data:", error);
+      }
+    }
+    
+  },
+
   created() {
     this.auth = JSON.parse(localStorage.getItem("auth"));
-    this.user.userName = this.auth.userName;
-    this.admin = this.auth.admin !== null;
-    // this.owner =   this.auth.owner !== null
+
     if (this.admin) {
-      this.user.firstName =  this.auth.admin.adminFname
-      this.user.lastName =  this.auth.admin.adminLname
-      this.user.Tel =  this.auth.admin.adminTel
-    }else{
-      this.user.firstName =  this.auth.owner.ownerFname
-      this.user.lastName =  this.auth.owner.ownerLname
-      this.user.Tel =  this.auth.owner.ownerTel
+      this.user.firstName = this.auth.admin.adminFname;
+      this.user.lastName = this.auth.admin.adminLname;
+      this.user.Tel = this.auth.admin.adminTel;
+    } else {
+      this.user.firstName = this.auth.owner.ownerFname;
+      this.user.lastName = this.auth.owner.ownerLname;
+      this.user.Tel = this.auth.owner.ownerTel;
     }
+    this.reserve();
   }
 };
 </script>
